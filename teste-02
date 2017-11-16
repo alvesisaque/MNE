@@ -1,0 +1,48 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+def erro_quadratico(w):
+    erro = 0
+    for i in range(0, 20):
+        erro = erro + (np.sin(w * np.array(ts[i])) - np.array(ys[i])) ** 2
+    return erro
+
+def busca_ternaria(A, B, erro):
+    while True:
+        xi1 = A + (B - A)/3
+        xi2 = A + (B - A) * 2 / 3
+        fa = erro_quadratico(xi1)
+        fb = erro_quadratico(xi2)
+
+        if fa > fb:
+            A = xi1
+        else:
+            B = xi2
+
+        if abs(A - B) < erro:
+            break
+
+    return xi1 if fa < fb else xi2
+
+ts = [   0.        ,    5.26315789,   10.52631579,   15.78947368,
+        21.05263158,   26.31578947,   31.57894737,   36.84210526,
+        42.10526316,   47.36842105,   52.63157895,   57.89473684,
+        63.15789474,   68.42105263,   73.68421053,   78.94736842,
+        84.21052632,   89.47368421,   94.73684211,  100.        ]
+
+ys = [ 0.2493938 ,  0.72091586,  1.08935177,  0.82557285,  0.15184373,
+      -0.55819513, -0.84832015, -1.13075724, -0.66132559, -0.37482053,
+       0.49910671,  0.99533713,  0.97493417,  0.56770796, -0.59740919,
+      -0.76333201, -1.05362856, -0.8085086 , -0.32029816,  0.4021104 ]
+
+erro = 1e-6
+
+A = 0
+B = np.pi
+R = busca_ternaria(A, B, erro)
+
+print('EQ = %f ;  w = %f ; A inicial = %f ; B inicial = %f' % (erro_quadratico(R), R, A, B))
+
+plt.grid(True)
+plt.plot(ts,  np.sin(R * np.array(ts)))
+plt.show()
